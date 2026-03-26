@@ -88,16 +88,26 @@ jobs:
       #   run: |
       #     docker push ${{ secrets.ACR_LOGIN_SERVER }}/my-app:${{ github.sha }}
 
-      - name: Tag image
-        run: |
-          # docker tag <image name>:latest <ACR registry name>.azurecr.io/<image name>
-          docker tag ${{ env.CONTAINER_NAME }}:latest ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+      # - name: Tag image
+      #   run: |
+      #     # docker tag <image name>:latest <ACR registry name>.azurecr.io/<image name>
+      #     docker tag ${{ env.CONTAINER_NAME }}:latest ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
 
 
-      - name: Push image to ACR
-        run: |
-          # docker push <ACR registry name>.azurecr.io/<image name>
-          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+      # - name: Push image to ACR
+      #   run: |
+      #     docker push <ACR registry name>.azurecr.io/<image name>
+      #     docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false # This is the default, but can be explicitly stated
+          load: true  # This exports the image to the Docker daemon for local use
+          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}, ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest
+          # tags: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}, ${{ secrets.ACR_LOGIN_SERVER }}/myapp:latest
+
 
 
   deploy:
