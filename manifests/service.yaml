@@ -2,7 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: aksdeploysvc
-  namespace: sample-app-namespace-1774550555471
+  # namespace: sample-app-namespace-1774550555471
+  namespace: default
   labels:
     app.kubernetes.io/name: aksdeploysvc
     kubernetes.azure.com/generator: devhub
