@@ -80,13 +80,25 @@ jobs:
       #   run: |
       #     az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ${{ env.DOCKER_FILE }} ${{ env.BUILD_CONTEXT_PATH }}
 
-      - name: Build Docker image
+      # - name: Build Docker image
+      #   run: |
+      #     docker build . -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+
+      # - name: Push image to ACR
+      #   run: |
+      #     docker push ${{ secrets.ACR_LOGIN_SERVER }}/my-app:${{ github.sha }}
+
+      - name: Tag image
         run: |
-          docker build . -t ${{ secrets.ACR_LOGIN_SERVER }}/my-app:${{ github.sha }}
+          # docker tag <image name>:latest <ACR registry name>.azurecr.io/<image name>
+          docker tag ${{ env.CONTAINER_NAME }}:latest ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+
 
       - name: Push image to ACR
         run: |
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/my-app:${{ github.sha }}
+          # docker push <ACR registry name>.azurecr.io/<image name>
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+
 
   deploy:
     permissions:
