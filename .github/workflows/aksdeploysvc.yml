@@ -93,22 +93,27 @@ jobs:
       #     # docker tag <image name>:latest <ACR registry name>.azurecr.io/<image name>
       #     docker tag ${{ env.CONTAINER_NAME }}:latest ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
 
-
       # - name: Push image to ACR
       #   run: |
       #     docker push <ACR registry name>.azurecr.io/<image name>
       #     docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v6
+      # - name: Build Docker image
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     context: .
+      #     push: false # This is the default, but can be explicitly stated
+      #     load: true  # This exports the image to the Docker daemon for local use
+      #     tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}, ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest
+      #     # tags: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}, ${{ secrets.ACR_LOGIN_SERVER }}/myapp:latest
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
         with:
           context: .
-          push: false # This is the default, but can be explicitly stated
-          load: true  # This exports the image to the Docker daemon for local use
-          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}, ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest
+          push: true
           # tags: ${{ secrets.ACR_LOGIN_SERVER }}/myapp:${{ github.sha }}, ${{ secrets.ACR_LOGIN_SERVER }}/myapp:latest
-
-
+          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}, ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest
 
   deploy:
     permissions:
@@ -134,7 +139,7 @@ jobs:
       - name: Set up kubelogin for non-interactive login
         uses: azure/use-kubelogin@v1
         with:
-          kubelogin-version: 'v0.0.25'
+          kubelogin-version: "v0.0.25"
 
       # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
       - name: Get K8s context
@@ -142,8 +147,8 @@ jobs:
         with:
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
           cluster-name: ${{ env.CLUSTER_NAME }}
-          admin: 'false'
-          use-kubelogin: 'true'
+          admin: "false"
+          use-kubelogin: "true"
           resource-type: ${{ env.CLUSTER_RESOURCE_TYPE }}
 
       # Checks if the AKS cluster is private
@@ -199,4 +204,3 @@ jobs:
           namespace: ${{ env.NAMESPACE }}
           resource-type: ${{ env.CLUSTER_RESOURCE_TYPE }}
           annotate-namespace: ${{ env.CLUSTER_RESOURCE_TYPE != 'Microsoft.ContainerService/fleets' }}
-
