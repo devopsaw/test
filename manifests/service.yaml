@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: aksdeploysvc
+  namespace: sample-app-namespace-1774550555471
+  labels:
+    app.kubernetes.io/name: aksdeploysvc
+    kubernetes.azure.com/generator: devhub
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: aksdeploysvc
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
