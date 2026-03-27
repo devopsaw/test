@@ -156,6 +156,9 @@ jobs:
       # - name: Get AKS credentials
       #   run: az aks get-credentials --resource-group aksdeploysvc --name aksdeploysvcapp --overwrite-existing
 
+      - name: Set Context
+        run: kubectl config set-context --current --namespace=sample-app-namespace-1774550555471
+
 
       # Checks if the AKS cluster is private
       - name: Is private cluster
