@@ -47,7 +47,7 @@ env:
   DEPLOYMENT_MANIFEST_PATH: ./manifests
   DOCKER_FILE: ./Dockerfile
   BUILD_CONTEXT_PATH: ./
-  NAMESPACE: default
+  NAMESPACE: sample-app-namespace-1774550555471
   ENABLENAMESPACECREATION: false
   AUTH_TYPE: SERVICE_PRINCIPAL
 
@@ -153,8 +153,8 @@ jobs:
 
           
       # Gets AKS credentials
-      - name: Get AKS credentials
-        run: az aks get-credentials --resource-group aksdeploysvc --name aksdeploysvcapp --overwrite-existing
+      # - name: Get AKS credentials
+      #   run: az aks get-credentials --resource-group aksdeploysvc --name aksdeploysvcapp --overwrite-existing
 
 
       # Checks if the AKS cluster is private
