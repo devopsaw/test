@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: aksdeploysvc
     kubernetes.azure.com/generator: devhub
-  namespace: default
+  namespace: sample-app-namespace-1774550555471
 spec:
   replicas: 2
   selector:
